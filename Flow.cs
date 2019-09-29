@@ -5,23 +5,41 @@ using System.Threading.Tasks;
 
 namespace flowsharp
 {
-    class Flow<T> : IFlow<T>, IAsyncEnumerable<T>
+    class Flow<T> : IFlow<T>
     {
-        private readonly Func<IFlowCollector<T>, Task> _collectAction;
+        private readonly Func<IFlowCollector<T>, Task> _emitter;
 
-        public Flow(Func<IFlowCollector<T>, Task> collector)
+        public Flow(Func<IFlowCollector<T>, Task> emitter)
         {
-            _collectAction = collector;
+            _emitter = emitter;
         }
 
         public Task Collect(IFlowCollector<T> collector)
         {
-            return _collectAction(collector);
+            return _emitter(collector);
+        }
+
+        public IAsyncEnumerable<T> CollectEnumerable<TCollector>(TCollector collector)
+            where TCollector : IFlowCollector<T>, IAsyncEnumerator<T>
+        {
+            return new FlowEnumerableAdapter<T>(collector);
+        }
+
+
+    }
+
+    class FlowEnumerableAdapter<T> : IAsyncEnumerable<T>
+    {
+        private readonly IAsyncEnumerator<T> _enumerator;
+
+        public FlowEnumerableAdapter(IAsyncEnumerator<T> enumerator)
+        {
+            _enumerator = enumerator;
         }
 
         public IAsyncEnumerator<T> GetAsyncEnumerator(CancellationToken cancellationToken = default)
         {
-            throw new NotImplementedException();
+            return _enumerator;
         }
     }
 }
