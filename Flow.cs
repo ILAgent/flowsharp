@@ -19,9 +19,11 @@ namespace flowsharp
             return _emitter(collector);
         }
 
-        public IAsyncEnumerable<T> CollectEnumerable<TCollector>(TCollector collector)
+        public IAsyncEnumerable<T> CollectEnumerable<TCollector>()
             where TCollector : IFlowCollector<T>, IAsyncEnumerator<T>
         {
+            var collector = new FlowCollectorEnumerable<T>();
+            _emitter(collector);
             return new FlowEnumerableAdapter<T>(collector);
         }
 
