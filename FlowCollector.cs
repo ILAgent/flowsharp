@@ -24,8 +24,10 @@ namespace flowsharp
 
     class FlowCollectorEnumerable<T> : IFlowCollector<T>, IAsyncEnumerator<T>
     {
-        private readonly SemaphoreSlim _moveNextEvent = new SemaphoreSlim(1);
-        private readonly SemaphoreSlim _emitEvent = new SemaphoreSlim(1);
+        private readonly SemaphoreSlim _moveNextSemaphore = new SemaphoreSlim(1);
+        private readonly SemaphoreSlim _emitOrFinishSemaphore = new SemaphoreSlim(1);
+
+        private bool _isFinished;
 
         public T Current { get; private set; }
 
@@ -33,17 +35,22 @@ namespace flowsharp
 
         public async Task Emit(T item)
         {
-            await _moveNextEvent.WaitAsync();
+            await _moveNextSemaphore.WaitAsync();
             Current = item;
-            _emitEvent.Release();
+            _emitOrFinishSemaphore.Release();
         }
 
         public async ValueTask<bool> MoveNextAsync()
         {
-            _moveNextEvent.Release();
-            await _emitEvent.WaitAsync();
+            _moveNextSemaphore.Release();
+            await _emitOrFinishSemaphore.WaitAsync();
+            return !_isFinished;
+        }
 
-            return true;
+        public void Finish()
+        {
+            _isFinished = true;
+            _emitOrFinishSemaphore.Release();
         }
 
      }

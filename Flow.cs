@@ -23,7 +23,7 @@ namespace flowsharp
             where TCollector : IFlowCollector<T>, IAsyncEnumerator<T>
         {
             var collector = new FlowCollectorEnumerable<T>();
-            _emitter(collector);
+            _emitter(collector).ContinueWith(_ => collector.Finish());
             return new FlowEnumerableAdapter<T>(collector);
         }
 
