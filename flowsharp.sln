@@ -1,7 +1,7 @@
 
 Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio 15
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "flowsharp", "flowsharp.csproj", "{8766944F-CE10-4E1E-9644-2585888409BD}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "FlowSharp.Test", "FlowSharp.Test.csproj", "{8766944F-CE10-4E1E-9644-2585888409BD}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
