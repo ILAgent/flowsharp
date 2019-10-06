@@ -3,7 +3,7 @@ using System.Threading.Tasks;
 
 namespace FlowSharp
 {
-    static class FlowExtensions
+    public static class FlowExtensions
     {
         public static Task Collect<T>(this IFlow<T> flow, Action<T> collectorAction)
         {

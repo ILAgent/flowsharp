@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Threading.Tasks;
 
-namespace FlowSharp
+namespace FlowSharp.Test
 {
     class Program
     {

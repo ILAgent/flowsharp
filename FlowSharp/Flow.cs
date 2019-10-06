@@ -5,7 +5,7 @@ using System.Threading.Tasks;
 
 namespace FlowSharp
 {
-    class Flow<T> : IFlow<T>
+    public class Flow<T> : IFlow<T>
     {
         private readonly Func<IFlowCollector<T>, Task> _emitter;
 
