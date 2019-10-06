@@ -9,6 +9,7 @@ namespace flowsharp
         {
             var testFlow = new Flow<int>(async collector =>
             {
+                await Task.Delay(2000);
                 await collector.Emit(0);
                 await Task.Delay(2000);
                 await collector.Emit(1);
@@ -22,7 +23,13 @@ namespace flowsharp
 
             Task.Run(async () =>
             {
-                await foreach (var item in testFlow.CollectEnumerable())
+                var enumerable = testFlow.CollectEnumerable();
+                Console.WriteLine($"{DateTime.Now} enumerable has been created");
+
+                await Task.Delay(3000);
+
+                Console.WriteLine($"{DateTime.Now} enter to loop");
+                await foreach (var item in enumerable)
                 {
                     Console.WriteLine($"{DateTime.Now} {item}");
                 }

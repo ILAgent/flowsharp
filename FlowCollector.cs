@@ -24,8 +24,8 @@ namespace flowsharp
 
     class FlowCollectorEnumerable<T> : IFlowCollector<T>, IAsyncEnumerator<T>
     {
-        private readonly SemaphoreSlim _moveNextSemaphore = new SemaphoreSlim(1);
-        private readonly SemaphoreSlim _emitOrFinishSemaphore = new SemaphoreSlim(1);
+        private readonly SemaphoreSlim _moveNextSemaphore = new SemaphoreSlim(0, 1);
+        private readonly SemaphoreSlim _emitOrFinishSemaphore = new SemaphoreSlim(0, 1);
 
         private bool _isFinished;
 
@@ -53,7 +53,7 @@ namespace flowsharp
             _emitOrFinishSemaphore.Release();
         }
 
-     }
+    }
 
 
 }
