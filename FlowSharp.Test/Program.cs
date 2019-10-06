@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Threading.Tasks;
+using FlowSharp.AsyncEnumerable;
 
 namespace FlowSharp.Test
 {
@@ -7,7 +8,7 @@ namespace FlowSharp.Test
     {
         static void Main(string[] args)
         {
-            var testFlow = new Flow<int>(async collector =>
+            var testFlow = FlowFactory.Create<int>(async collector =>
             {
                 await Task.Delay(2000);
                 await collector.Emit(0);

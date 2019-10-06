@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Threading.Tasks;
+using FlowSharp.Internal;
 
 namespace FlowSharp
 {
@@ -17,11 +18,7 @@ namespace FlowSharp
 
         public static Task Collect<T>(this IFlow<T> flow, Func<T, Task> asyncCollector)
         {
-            var collector = new FlowCollector<T>(item =>
-            {
-                asyncCollector(item);
-                return Task.CompletedTask;
-            });
+            var collector = new FlowCollector<T>(item => asyncCollector(item));
             return flow.Collect(collector);
         }
 
