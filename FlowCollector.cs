@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.Threading;
 using System.Threading.Tasks;
 
-namespace flowsharp
+namespace FlowSharp
 {
     class FlowCollector<T> : IFlowCollector<T>
     {

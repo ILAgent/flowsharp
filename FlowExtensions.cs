@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Threading.Tasks;
 
-namespace flowsharp
+namespace FlowSharp
 {
     static class FlowExtensions
     {
