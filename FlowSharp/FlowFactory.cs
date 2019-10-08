@@ -6,7 +6,7 @@ namespace FlowSharp
 {
     public static class FlowFactory
     {
-        public static IFlow<T> Create<T>(Func<IFlowCollector<T>, Task> emitter)
+        public static IFlow<T> Flow<T>(Func<IFlowCollector<T>, Task> emitter)
         {
             return new Flow<T>(emitter);
         }

@@ -29,8 +29,9 @@ namespace FlowSharp.AsyncEnumerable
             return !_isFinished;
         }
 
-        public void Finish()
+        public async Task Finish()
         {
+            await _moveNextSemaphore.WaitAsync();
             _isFinished = true;
             _emitOrFinishSemaphore.Release();
         }
