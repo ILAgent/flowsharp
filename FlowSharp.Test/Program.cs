@@ -2,6 +2,7 @@
 using System.Linq;
 using System.Threading.Tasks;
 using FlowSharp.AsyncEnumerable;
+using FlowSharp.Internal;
 using static FlowSharp.FlowFactory;
 
 namespace FlowSharp.Test
@@ -60,6 +61,34 @@ namespace FlowSharp.Test
             }).Wait();
 
 
+        }
+
+        async Task Test()
+        {
+            var flow = new Flow<int>(async collector =>
+            {
+                await collector.Emit(1);
+                await Task.Delay(1000);
+                await collector.Emit(2);
+                await Task.Delay(1000);
+                await collector.Emit(3);
+            });
+            var collector = new FlowCollector<int>(async item => Console.WriteLine(item));
+            await flow.Collect(collector);
+        }
+
+        async Task Test2()
+        {
+            await Flow<int>(async collector =>
+            {
+                await collector.Emit(1);
+                await Task.Delay(1000);
+                await collector.Emit(2);
+                await Task.Delay(1000);
+                await collector.Emit(3);
+            })
+            .Collect(Console.WriteLine);
+            
         }
     }
 }

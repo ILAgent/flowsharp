@@ -1,9 +1,10 @@
 ﻿using System;
+using System.Threading;
 using System.Threading.Tasks;
 
 namespace FlowSharp.Internal
 {
-    internal class FlowCollector<T> : IFlowCollector<T>
+    public class FlowCollector<T> : IFlowCollector<T>
     {
         private readonly Func<T, Task> _handler;
 
@@ -12,7 +13,7 @@ namespace FlowSharp.Internal
             _handler = handler;
         }
 
-        public Task Emit(T item)
+        public Task Emit(T item, CancellationToken cancellationToken = default)
         {
             return _handler(item);
         }
