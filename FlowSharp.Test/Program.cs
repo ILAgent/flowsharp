@@ -7,6 +7,7 @@ using static FlowSharp.FlowFactory;
 
 namespace FlowSharp.Test
 {
+    /*
     class Program
     {
         static void Main(string[] args)
@@ -65,7 +66,7 @@ namespace FlowSharp.Test
 
         async Task Test()
         {
-            var flow = new Flow<int>(async collector =>
+            var flow = new Flow<int>(async (collector,_) =>
             {
                 await collector.Emit(1);
                 await Task.Delay(1000);
@@ -73,7 +74,7 @@ namespace FlowSharp.Test
                 await Task.Delay(1000);
                 await collector.Emit(3);
             });
-            var collector = new FlowCollector<int>(async item => Console.WriteLine(item));
+            var collector = new FlowCollector<int>(async (item,_) => Console.WriteLine(item));
             await flow.Collect(collector);
         }
 
@@ -91,6 +92,7 @@ namespace FlowSharp.Test
             
         }
     }
+ */   
 }
 
 

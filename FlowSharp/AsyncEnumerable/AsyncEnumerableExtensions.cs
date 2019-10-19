@@ -5,10 +5,12 @@ namespace FlowSharp.AsyncEnumerable
 {
     public static class AsyncEnumerableExtensions
     {
-        public static IAsyncEnumerable<T> CollectEnumerable<T>(this IFlow<T> flow)
+        public static IAsyncEnumerable<T> CollectEnumerable<T>(this IFlow<T> flow, CancellationToken cancellationToken = default)
         {
             var collector = new FlowCollectorEnumerable<T>();
-            flow.Collect(collector).ContinueWith(_ => collector.Finish());
+            flow
+                .Collect(collector, cancellationToken)
+                .ContinueWith(_ => collector.Finish(), cancellationToken);
             return new FlowEnumerableAdapter<T>(collector);
         }
     }

@@ -6,16 +6,16 @@ namespace FlowSharp.Internal
 {
     public class FlowCollector<T> : IFlowCollector<T>
     {
-        private readonly Func<T, Task> _handler;
+        private readonly Func<T, CancellationToken, Task> _handler;
 
-        public FlowCollector(Func<T, Task> handler)
+        public FlowCollector(Func<T, CancellationToken, Task> handler)
         {
             _handler = handler;
         }
 
         public Task Emit(T item, CancellationToken cancellationToken = default)
         {
-            return _handler(item);
+            return _handler(item, cancellationToken);
         }
 
     }
