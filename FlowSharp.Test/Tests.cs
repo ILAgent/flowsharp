@@ -48,6 +48,37 @@ namespace FlowSharp.Test
             await Task.WhenAll(flowTask, cancelationTask);
         }
 
+        [Test]
+        public async Task FromEventHandlerTest()
+        {
+            var emulator = new ClicksEmulator();
+            var emulatorTask = emulator.Start();
+
+            var cts = new CancellationTokenSource();
+            var cancelationTask = Task.Run(async () =>
+            {
+                await Task.Delay(5000);
+                cts.Cancel();
+            });
+
+            var flowTask = Flow<ClicksEmulator.ClickEventArgs>(async (collector, cancellationToken) =>
+            {
+                void clickHandler(object sender, ClicksEmulator.ClickEventArgs args) => collector.Emit(args);
+
+                emulator.ButtonClick += clickHandler;
+                cancellationToken.Register(() =>
+                {
+                    emulator.ButtonClick -= clickHandler;
+                });
+
+                await Task.Delay(-1, cancellationToken);
+            })
+            .Collect(item => Log($"{item.Button} {item.X} {item.Y}"), cts.Token);
+
+            await Task.WhenAll(flowTask);
+
+        }
+
         private void Log(object data) => Console.WriteLine($"{DateTime.Now} {data}");
     }
 
