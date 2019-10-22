@@ -4,7 +4,7 @@ using System.Threading.Tasks;
 
 namespace FlowSharp.Test
 {
-    public class ClicksEmulator
+    class ClicksEmulator
     {
         public enum Button { Left, Right }
 
@@ -42,6 +42,25 @@ namespace FlowSharp.Test
             }
         }
 
+    }
+
+    static class ClicksEmulatorExtensions
+    {
+        public static IFlow<ClicksEmulator.ClickEventArgs> Clicks(this ClicksEmulator emulator)
+        {
+            return FlowFactory.Flow<ClicksEmulator.ClickEventArgs>(async (collector, cancellationToken) =>
+            {
+                void clickHandler(object sender, ClicksEmulator.ClickEventArgs args) => collector.Emit(args);
+
+                emulator.ButtonClick += clickHandler;
+                cancellationToken.Register(() =>
+                {
+                    emulator.ButtonClick -= clickHandler;
+                });
+
+                await Task.Delay(-1, cancellationToken);
+            });
+        }
     }
 
 
