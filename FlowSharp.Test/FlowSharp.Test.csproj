@@ -6,6 +6,7 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <ProjectReference Include="..\FlowSharp.Operators\FlowSharp.Operators.csproj" />
     <ProjectReference Include="..\FlowSharp\FlowSharp.csproj" />
   </ItemGroup>
 

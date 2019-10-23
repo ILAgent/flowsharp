@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Threading;
 using System.Threading.Tasks;
+using FlowSharp.Operators;
 using NUnit.Framework;
 using static FlowSharp.FlowFactory;
 
@@ -65,6 +66,25 @@ namespace FlowSharp.Test
                 .Clicks()
                 .Collect(item => Log($"{item.Button} {item.X} {item.Y}"), cts.Token);
 
+        }
+
+        [Test]
+        public Task FilterTest()
+        {
+            var emulator = new ClicksEmulator();
+            var emulatorTask = emulator.Start();
+
+            var cts = new CancellationTokenSource();
+            var cancelationTask = Task.Run(async () =>
+            {
+                await Task.Delay(5000);
+                cts.Cancel();
+            });
+
+            return emulator
+                .Clicks()
+                .Filter(click => click.Button == ClicksEmulator.Button.Left)
+                .Collect(item => Log($"{item.Button} {item.X} {item.Y}"), cts.Token);
         }
 
         private void Log(object data) => Console.WriteLine($"{DateTime.Now} {data}");
