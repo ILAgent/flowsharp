@@ -87,6 +87,26 @@ namespace FlowSharp.Test
                 .Collect(item => Log($"{item.Button} {item.X} {item.Y}"), cts.Token);
         }
 
+        [Test]
+        public Task MapAndOnNextTest()
+        {
+            var emulator = new ClicksEmulator();
+            var emulatorTask = emulator.Start();
+
+            var cts = new CancellationTokenSource();
+            var cancelationTask = Task.Run(async () =>
+            {
+                await Task.Delay(5000);
+                cts.Cancel();
+            });
+
+            return emulator
+                .Clicks()
+                .OnNext(item => Log($"{item.Button} {item.X} {item.Y}"))
+                .Map(click => click.Button == ClicksEmulator.Button.Left ? 0 : 1)                
+                .Collect(item => Log($"{item}"), cts.Token);
+        }
+
         private void Log(object data) => Console.WriteLine($"{DateTime.Now} {data}");
     }
 
