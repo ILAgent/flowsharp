@@ -17,7 +17,5 @@ namespace FlowSharp.Internal
         {
             return _handler(item, cancellationToken);
         }
-
     }
-
 }

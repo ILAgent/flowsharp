@@ -12,18 +12,32 @@ namespace FlowSharp.Test
     [TestFixture]
     public class Tests
     {
-        [Test]
-        public async Task FlowTest()
+        private void Log(object data)
         {
-            await Flow<int>(async collector =>
-                {
-                    await collector.Emit(1);
-                    await Task.Delay(2000);
-                    await collector.Emit(2);
-                    await Task.Delay(2000);
-                    await collector.Emit(3);
-                })
-                .Collect(item => Log(item));
+            Console.WriteLine($"{DateTime.Now} {data}");
+        }
+
+        [Test]
+        public async Task AsyncEnumerableTest()
+        {
+            var emulator = new ClicksEmulator();
+            var emulatorTask = emulator.Start();
+
+            var cts = new CancellationTokenSource();
+            var cancelationTask = Task.Run(async () =>
+            {
+                await Task.Delay(5000);
+                cts.Cancel();
+            });
+
+            var clicks = emulator
+                .Clicks()
+                .OnNext(item => Log($"{item.Button} {item.X} {item.Y}"))
+                .CollectEnumerable(cts.Token)
+                .Where(click => click.Button == ClicksEmulator.Button.Right)
+                .Select(click => click.Y < 540 ? "TOP" : "LEFT");
+
+            await foreach (var click in clicks) Log($"Clicked at: {click}");
         }
 
         [Test]
@@ -51,24 +65,6 @@ namespace FlowSharp.Test
         }
 
         [Test]
-        public Task FromEventHandlerTest()
-        {
-            var emulator = new ClicksEmulator();
-            var emulatorTask = emulator.Start();
-
-            var cts = new CancellationTokenSource();
-            var cancelationTask = Task.Run(async () =>
-            {
-                await Task.Delay(5000);
-                cts.Cancel();
-            });
-
-            return emulator
-                .Clicks()
-                .Collect(item => Log($"{item.Button} {item.X} {item.Y}"), cts.Token);
-        }
-
-        [Test]
         public Task FilterTest()
         {
             var emulator = new ClicksEmulator();
@@ -84,6 +80,38 @@ namespace FlowSharp.Test
             return emulator
                 .Clicks()
                 .Filter(click => click.Button == ClicksEmulator.Button.Left)
+                .Collect(item => Log($"{item.Button} {item.X} {item.Y}"), cts.Token);
+        }
+
+        [Test]
+        public async Task FlowTest()
+        {
+            await Flow<int>(async collector =>
+                {
+                    await collector.Emit(1);
+                    await Task.Delay(2000);
+                    await collector.Emit(2);
+                    await Task.Delay(2000);
+                    await collector.Emit(3);
+                })
+                .Collect(item => Log(item));
+        }
+
+        [Test]
+        public Task FromEventHandlerTest()
+        {
+            var emulator = new ClicksEmulator();
+            var emulatorTask = emulator.Start();
+
+            var cts = new CancellationTokenSource();
+            var cancelationTask = Task.Run(async () =>
+            {
+                await Task.Delay(5000);
+                cts.Cancel();
+            });
+
+            return emulator
+                .Clicks()
                 .Collect(item => Log($"{item.Button} {item.X} {item.Y}"), cts.Token);
         }
 
@@ -105,32 +133,6 @@ namespace FlowSharp.Test
                 .OnNext(item => Log($"{item.Button} {item.X} {item.Y}"))
                 .Map(click => click.Button == ClicksEmulator.Button.Left ? 0 : 1)
                 .Collect(item => Log($"{item}"), cts.Token);
-        }
-
-        [Test]
-        public async Task AsyncEnumerableTest()
-        {
-            var emulator = new ClicksEmulator();
-            var emulatorTask = emulator.Start();
-
-            var cts = new CancellationTokenSource();
-            var cancelationTask = Task.Run(async () =>
-            {
-                await Task.Delay(5000);
-                cts.Cancel();
-            });
-
-            var clicks = emulator
-                .Clicks()
-                .OnNext(item => Log($"{item.Button} {item.X} {item.Y}"))
-                .CollectEnumerable(cts.Token)
-                .Where(click => click.Button == ClicksEmulator.Button.Right)
-                .Select(click => click.Y < 540 ? "TOP" : "LEFT");
-
-            await foreach (var click in clicks)
-            {
-                Log($"Clicked at: {click}");
-            }
         }
 
         [Test]
@@ -163,12 +165,7 @@ namespace FlowSharp.Test
                 )
                 .SelectMany(flow => flow.CollectEnumerable());
 
-            await foreach (var click in clicks)
-            {
-                Log($"Changed: {click.Button} {click.X} {click.Y}");
-            }
+            await foreach (var click in clicks) Log($"Changed: {click.Button} {click.X} {click.Y}");
         }
-
-        private void Log(object data) => Console.WriteLine($"{DateTime.Now} {data}");
     }
 }

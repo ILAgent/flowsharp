@@ -13,7 +13,16 @@ namespace FlowSharp.AsyncEnumerable
 
         public T Current { get; private set; }
 
-        public async ValueTask DisposeAsync() { }
+        public async ValueTask DisposeAsync()
+        {
+        }
+
+        public async ValueTask<bool> MoveNextAsync()
+        {
+            _backpressureSemaphore.Release();
+            await _longPollingSemaphore.WaitAsync();
+            return !_isFinished;
+        }
 
         public async Task Emit(T item, CancellationToken cancellationToken)
         {
@@ -28,14 +37,5 @@ namespace FlowSharp.AsyncEnumerable
             _isFinished = true;
             _longPollingSemaphore.Release();
         }
-
-        public async ValueTask<bool> MoveNextAsync()
-        {
-            _backpressureSemaphore.Release();
-            await _longPollingSemaphore.WaitAsync();
-            return !_isFinished;
-        }
-
     }
-
 }

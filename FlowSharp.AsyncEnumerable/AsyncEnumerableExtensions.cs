@@ -5,7 +5,8 @@ namespace FlowSharp.AsyncEnumerable
 {
     public static class AsyncEnumerableExtensions
     {
-        public static IAsyncEnumerable<T> CollectEnumerable<T>(this IFlow<T> flow, CancellationToken cancellationToken = default)
+        public static IAsyncEnumerable<T> CollectEnumerable<T>(this IFlow<T> flow,
+            CancellationToken cancellationToken = default)
         {
             var collector = new FlowCollectorEnumerator<T>();
             cancellationToken.Register(async () => await collector.Finish());
