@@ -150,19 +150,18 @@ namespace FlowSharp.Test
                 .Clicks()
                 .OnNext(item => Log($"Original: {item.Button} {item.X} {item.Y}"))
                 .CollectEnumerable(cts.Token)
-                .SelectMany(click => click.Button == ClicksEmulator.Button.Left
+                .Select(click => click.Button == ClicksEmulator.Button.Left
                     ? Flow<ClicksEmulator.ClickEventArgs>(collector => collector.Emit(click))
-                        .CollectEnumerable()
                     : Flow<ClicksEmulator.ClickEventArgs>(async collector =>
-                        {
-                            var changedClick =
-                                new ClicksEmulator.ClickEventArgs(click.X, click.Y, ClicksEmulator.Button.Left);
-                            await collector.Emit(changedClick);
-                            await Task.Delay(200);
-                            await collector.Emit(changedClick);
-                        })
-                        .CollectEnumerable()
-                );
+                    {
+                        var changedClick =
+                            new ClicksEmulator.ClickEventArgs(click.X, click.Y, ClicksEmulator.Button.Left);
+                        await collector.Emit(changedClick);
+                        await Task.Delay(200);
+                        await collector.Emit(changedClick);
+                    })
+                )
+                .SelectMany(flow => flow.CollectEnumerable());
 
             await foreach (var click in clicks)
             {
