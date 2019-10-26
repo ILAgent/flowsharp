@@ -4,7 +4,7 @@ using System.Threading.Tasks;
 
 namespace FlowSharp.AsyncEnumerable
 {
-    internal class FlowCollectorEnumerable<T> : IFlowCollector<T>, IAsyncEnumerator<T>
+    internal class FlowCollectorEnumerator<T> : IFlowCollector<T>, IAsyncEnumerator<T>
     {
         private readonly SemaphoreSlim _backpressureSemaphore = new SemaphoreSlim(0, 1);
         private readonly SemaphoreSlim _longPollingSemaphore = new SemaphoreSlim(0, 1);
@@ -22,18 +22,18 @@ namespace FlowSharp.AsyncEnumerable
             _longPollingSemaphore.Release();
         }
 
-        public async ValueTask<bool> MoveNextAsync()
-        {
-            _backpressureSemaphore.Release();
-            await _longPollingSemaphore.WaitAsync();
-            return !_isFinished;
-        }
-
         public async Task Finish()
         {
             await _backpressureSemaphore.WaitAsync();
             _isFinished = true;
             _longPollingSemaphore.Release();
+        }
+
+        public async ValueTask<bool> MoveNextAsync()
+        {
+            _backpressureSemaphore.Release();
+            await _longPollingSemaphore.WaitAsync();
+            return !_isFinished;
         }
 
     }

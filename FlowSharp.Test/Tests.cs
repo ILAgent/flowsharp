@@ -1,6 +1,8 @@
 ﻿using System;
+using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
+using FlowSharp.AsyncEnumerable;
 using FlowSharp.Operators;
 using NUnit.Framework;
 using static FlowSharp.FlowFactory;
@@ -103,8 +105,34 @@ namespace FlowSharp.Test
             return emulator
                 .Clicks()
                 .OnNext(item => Log($"{item.Button} {item.X} {item.Y}"))
-                .Map(click => click.Button == ClicksEmulator.Button.Left ? 0 : 1)                
+                .Map(click => click.Button == ClicksEmulator.Button.Left ? 0 : 1)
                 .Collect(item => Log($"{item}"), cts.Token);
+        }
+
+        [Test]
+        public async Task AsyncEnumerableTest()
+        {
+            var emulator = new ClicksEmulator();
+            var emulatorTask = emulator.Start();
+
+            var cts = new CancellationTokenSource();
+            var cancelationTask = Task.Run(async () =>
+            {
+                await Task.Delay(5000);
+                cts.Cancel();
+            });
+
+            var clicks = emulator
+                .Clicks()
+                .OnNext(item => Log($"{item.Button} {item.X} {item.Y}"))
+                .CollectEnumerable(cts.Token)
+                .Where(click => click.Button == ClicksEmulator.Button.Right);
+
+            await foreach (var click in clicks)
+            {
+                Log($"Enumerable: {click.Button} {click.X} {click.Y}");
+            }
+
         }
 
         private void Log(object data) => Console.WriteLine($"{DateTime.Now} {data}");
