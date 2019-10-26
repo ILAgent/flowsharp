@@ -5,7 +5,6 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <Folder Include="AsyncEnumerable\" />
     <Folder Include="Internal\" />
   </ItemGroup>
 </Project>

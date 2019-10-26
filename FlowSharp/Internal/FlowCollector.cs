@@ -4,7 +4,7 @@ using System.Threading.Tasks;
 
 namespace FlowSharp.Internal
 {
-    public class FlowCollector<T> : IFlowCollector<T>
+    internal class FlowCollector<T> : IFlowCollector<T>
     {
         private readonly Func<T, CancellationToken, Task> _handler;
 

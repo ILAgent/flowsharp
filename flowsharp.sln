@@ -8,6 +8,8 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "FlowSharp", "FlowSharp\Flow
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "FlowSharp.Operators", "FlowSharp.Operators\FlowSharp.Operators.csproj", "{C0D1BB6B-C7C0-48AA-9C4E-3BCB1FE855EB}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "FlowSharp.AsyncEnumerable", "FlowSharp.AsyncEnumerable\FlowSharp.AsyncEnumerable.csproj", "{5F41ADBA-5D28-47B2-B11E-3BD325D4A525}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -26,6 +28,10 @@ Global
 		{C0D1BB6B-C7C0-48AA-9C4E-3BCB1FE855EB}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{C0D1BB6B-C7C0-48AA-9C4E-3BCB1FE855EB}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{C0D1BB6B-C7C0-48AA-9C4E-3BCB1FE855EB}.Release|Any CPU.Build.0 = Release|Any CPU
+		{5F41ADBA-5D28-47B2-B11E-3BD325D4A525}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{5F41ADBA-5D28-47B2-B11E-3BD325D4A525}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{5F41ADBA-5D28-47B2-B11E-3BD325D4A525}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{5F41ADBA-5D28-47B2-B11E-3BD325D4A525}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
