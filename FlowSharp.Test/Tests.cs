@@ -107,8 +107,9 @@ namespace FlowSharp.Test
                 .Collect(item => Log($"{item}"), cts.Token);
         }
 
+
         [Test]
-        public async Task AsyncEnumerableTest()
+        public async Task SelectManyTest()
         {
             var emulator = new ClicksEmulator();
             var emulatorTask = emulator.Start();
@@ -122,14 +123,27 @@ namespace FlowSharp.Test
 
             var clicks = emulator
                 .Clicks()
-                .OnNext(item => Log($"{item.Button} {item.X} {item.Y}"))
+                .OnNext(item => Log($"Original: {item.Button} {item.X} {item.Y}"))
                 .CollectEnumerable(cts.Token)
-                .Where(click => click.Button == ClicksEmulator.Button.Right)
-                .Select(click => click.Y < 540 ? "TOP" : "LEFT");
+                .SelectMany(click => click.Button == ClicksEmulator.Button.Left
+                                     
+                    ? Flow<ClicksEmulator.ClickEventArgs>(collector => collector.Emit(click))
+                        .CollectEnumerable()
+                    
+                    : Flow<ClicksEmulator.ClickEventArgs>(async collector =>
+                        {
+                            var changedClick =
+                                new ClicksEmulator.ClickEventArgs(click.X, click.Y, ClicksEmulator.Button.Left);
+                            await collector.Emit(changedClick);
+                            await Task.Delay(200);
+                            await collector.Emit(changedClick);
+                        })
+                        .CollectEnumerable()
+                );
 
             await foreach (var click in clicks)
             {
-                Log($"Clicked at: {click}");
+                Log($"Changed: {click.Button} {click.X} {click.Y}");
             }
         }
 
