@@ -12,19 +12,18 @@ namespace FlowSharp.Test
     [TestFixture]
     public class Tests
     {
-
         [Test]
         public async Task FlowTest()
         {
             await Flow<int>(async collector =>
-            {
-                await collector.Emit(1);
-                await Task.Delay(2000);
-                await collector.Emit(2);
-                await Task.Delay(2000);
-                await collector.Emit(3);
-            })
-            .Collect(item => Log(item));
+                {
+                    await collector.Emit(1);
+                    await Task.Delay(2000);
+                    await collector.Emit(2);
+                    await Task.Delay(2000);
+                    await collector.Emit(3);
+                })
+                .Collect(item => Log(item));
         }
 
         [Test]
@@ -33,14 +32,14 @@ namespace FlowSharp.Test
             var cts = new CancellationTokenSource();
 
             var flowTask = Flow<int>(async (collector, cancellationToken) =>
-            {
-                await collector.Emit(1);
-                await Task.Delay(2000, cancellationToken);
-                await collector.Emit(2);
-                await Task.Delay(2000, cancellationToken);
-                await collector.Emit(3);
-            })
-            .Collect(item => Log(item), cts.Token);
+                {
+                    await collector.Emit(1);
+                    await Task.Delay(2000, cancellationToken);
+                    await collector.Emit(2);
+                    await Task.Delay(2000, cancellationToken);
+                    await collector.Emit(3);
+                })
+                .Collect(item => Log(item), cts.Token);
 
             var cancelationTask = Task.Run(async () =>
             {
@@ -67,7 +66,6 @@ namespace FlowSharp.Test
             return emulator
                 .Clicks()
                 .Collect(item => Log($"{item.Button} {item.X} {item.Y}"), cts.Token);
-
         }
 
         [Test]
@@ -126,17 +124,15 @@ namespace FlowSharp.Test
                 .Clicks()
                 .OnNext(item => Log($"{item.Button} {item.X} {item.Y}"))
                 .CollectEnumerable(cts.Token)
-                .Where(click => click.Button == ClicksEmulator.Button.Right);
+                .Where(click => click.Button == ClicksEmulator.Button.Right)
+                .Select(click => click.Y < 540 ? "TOP" : "LEFT");
 
             await foreach (var click in clicks)
             {
-                Log($"Enumerable: {click.Button} {click.X} {click.Y}");
+                Log($"Clicked at: {click}");
             }
-
         }
 
         private void Log(object data) => Console.WriteLine($"{DateTime.Now} {data}");
     }
-
-
 }
