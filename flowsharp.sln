@@ -1,4 +1,4 @@
-Microsoft Visual Studio Solution File, Format Version 12.00
+﻿Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio Version 16
 VisualStudioVersion = 16.0.29418.71
 MinimumVisualStudioVersion = 10.0.40219.1
@@ -9,6 +9,8 @@ EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "FlowSharp.Operators", "FlowSharp.Operators\FlowSharp.Operators.csproj", "{C0D1BB6B-C7C0-48AA-9C4E-3BCB1FE855EB}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "FlowSharp.AsyncEnumerable", "FlowSharp.AsyncEnumerable\FlowSharp.AsyncEnumerable.csproj", "{5F41ADBA-5D28-47B2-B11E-3BD325D4A525}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "FlowSharp.Dispatchers", "FlowSharp.Dispatchers\FlowSharp.Dispatchers.csproj", "{AD24DAA7-A634-4A5F-9680-8DC830CB7E45}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -32,6 +34,10 @@ Global
 		{5F41ADBA-5D28-47B2-B11E-3BD325D4A525}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{5F41ADBA-5D28-47B2-B11E-3BD325D4A525}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{5F41ADBA-5D28-47B2-B11E-3BD325D4A525}.Release|Any CPU.Build.0 = Release|Any CPU
+		{AD24DAA7-A634-4A5F-9680-8DC830CB7E45}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{AD24DAA7-A634-4A5F-9680-8DC830CB7E45}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{AD24DAA7-A634-4A5F-9680-8DC830CB7E45}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{AD24DAA7-A634-4A5F-9680-8DC830CB7E45}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
